@@ -1,17 +1,32 @@
-def get_minterms_binary(num_literals, minterm_dec):
-        minterms_binary = []
-        for i in minterm_dec:
-            zero_deciciency = (num_literals-len(bin(i)[2:len(bin(i))]))
-            binary_number = bin(i)[2:len(bin(i))]
-            minterms_binary.append("0"*zero_deciciency + binary_number)
-        return minterms_binary;
+from minterm import Minterm
+def get_combination_index(minterm_1, minterm_2):
+    uneq_index = None
+    uneq_count = 0
+    for i in range(len(minterm_1.value_bits)):
+        if minterm_1.value_bits[i] != minterm_2.value_bits[i]:
+            uneq_index = i
+            uneq_count += 1
+    if uneq_count == 1:
+        return uneq_index
+    else:
+        return -1
 
-num_literals = 4;
-minterms_decimal = (0, 1, 3, 7, 8, 9, 11, 15)
-a = get_minterms_binary(num_literals, minterms_decimal)
-c = [[bit for bit in num] for num in a]
-print(c)
-b = [2, 2, 3, "d"]
-b[3] = 8
-print(b)
-print("as".zfill(4))
+def combine_minterms(minterm_1, minterm_2):
+    new_minterm = Minterm()
+    new_minterm.name = (minterm_1.name + minterm_2.name).strip()
+    new_minterm.value_bits = minterm_1.value_bits
+    new_minterm.value_dec = minterm_1.value_dec + minterm_2.value_dec
+    new_value_bits = ""
+    for bit in minterm_1.value_bits:
+        new_value_bits += bit
+    new_minterm.value_bin = new_value_bits
+    return new_minterm
+
+a = Minterm(4, 4)
+b = Minterm(5, 4)
+ind = get_combination_index(a, b)
+b.value_bits[ind] = a.value_bits[ind] = '_'
+print(a, b)
+c = combine_minterms(a, b)
+print(a==b)
+

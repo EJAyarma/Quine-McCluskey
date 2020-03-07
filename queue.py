@@ -17,3 +17,8 @@ class Queue():
 
     def get_size(self):
         return len(self.queue)
+
+myq = Queue()
+myq.enqueue(3)
+myq.enqueue(4)
+print(myq)

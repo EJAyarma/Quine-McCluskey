@@ -41,17 +41,3 @@ class LinkedList():
             print(this_node, end = '->')
             this_node = this_node.next_node
         print('None')
-
-#Test Code
-myList = LinkedList()
-myList.add(5)
-myList.add(8)
-myList.add(13)
-myList.print_list()
-
-print("size = " + str(myList.size))
-myList.remove(8)
-print("size = " + str(myList.size))
-myList.print_list()
-print(myList.find(5))
-print(myList.root) 
