@@ -21,8 +21,9 @@ class DFGenerator():
             self.minterms_grouped[group_key] = group_list
 
     def populate_queue(self):
-        for value in self.minterms_grouped.values():
-            self.process_linked_list.add(value)
+        groups = list(self.minterms_grouped.values())
+        for i in range(len(groups)-1, -1, -1):
+            self.process_linked_list.add(groups[i])
 
 
     def get_combination_index(self, minterm_1, minterm_2):
@@ -38,38 +39,38 @@ class DFGenerator():
             return -1
     
 
-    def combine_minterms(self, minterm_1, minterm_2):
+    def combine_minterms(self, minterm_1, minterm_2, common_index):
         new_minterm = Minterm()
         new_minterm.name = (minterm_1.name + minterm_2.name).strip()
         new_minterm.value_bits = minterm_1.value_bits
+        new_minterm.value_bits[common_index] = "_"
         new_minterm.value_dec = '.'.join([minterm_1.value_dec, minterm_2.value_dec])
         new_value_bits = ""
-        for bit in minterm_1.value_bits:
+        for bit in new_minterm.value_bits:
             new_value_bits += bit
         new_minterm.value_bin = new_value_bits
         return new_minterm
-
  
     def get_PIs(self):
         uncombined_minterms = []
-        PI_IMAGE = []
-        can_be_combined = True
+        combinations = 0
+        temp_process_llist = LinkedList()
         current_group = self.process_linked_list.root
-
-        while(not current_group.next_node is None):
+        while(not (current_group.next_node is None)):
             next_group = current_group.next_node
-            for minterm_1 in current_group.data:
+            for j in range(len(current_group.data)):
+                minterm_1 = current_group.data[j]
+                PI_IMAGE = []
                 for i in range(len(next_group.data)):
+                    print(len(next_group.data))
                     minterm_2 = next_group.data[i]
-                    diff_index = self.get_combination_index(minterm_1, minterm_2)
-                    if diff_index != -1:
-                        minterm_1.value_bits[diff_index] = '_'
-                        minterm_2.value_bits[diff_index] = '_'
-                        PI_IMAGE.append(self.combine_minterms(minterm_1, minterm_2))
-                        minterm_1.combined = minterm_2.combined = True
+                    com_index = self.get_combination_index(minterm_1, minterm_2)
+                    if com_index != -1:
+                        new_minterm = self.combine_minterms(minterm_1, minterm_2, com_index)
+                        PI_IMAGE.append(new_minterm)
+            temp_process_llist.add(PI_IMAGE)
             current_group = next_group
-        PI_IMAGE = list(set(PI_IMAGE)) 
-        print(PI_IMAGE)       
+        temp_process_llist.print_list()
 
 
     def get_EPIs():
@@ -83,4 +84,5 @@ my_digit_func.group_minterms()
 print(my_digit_func.minterms_grouped)
 my_digit_func.populate_queue()
 my_digit_func.process_linked_list.print_list()
+print(my_digit_func.process_linked_list.root.next_node)
 my_digit_func.get_PIs()
