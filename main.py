@@ -14,3 +14,4 @@ print(c)
 b = [2, 2, 3, "d"]
 b[3] = 8
 print(b)
+print("as".zfill(4))
