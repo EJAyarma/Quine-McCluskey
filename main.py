@@ -26,19 +26,37 @@ def combine_minterms(minterm_1, minterm_2, common_index):
 
 my_list = LinkedList()
 
-my_list.add([7, 8, 9])
-my_list.add([4, 5, 6])
-my_list.add([1, 2, 3])
-my_list.print_list()
-her_list = LinkedList()
-cur_group = my_list.root
-while(not cur_group.next_node is None):
-    next_group = cur_group.next_node
-    for elem in cur_group.data:
-        temp = []
-        for i in range(len(next_group.data)):
-            temp.append(elem+next_group.data[i])
-    her_list.add(temp)
-    cur_group = cur_group.next_node
+my_list.add([Minterm(0, 4)])
+my_list.add([Minterm(1, 4), Minterm(8, 4)])
+my_list.add([Minterm(3, 4), Minterm(9, 4)])
+my_list.add([Minterm(7, 4), Minterm(11, 4)])
+my_list.add([Minterm(15, 4)])
+def do(llist):
+    temp_llist = LinkedList()
+    current_group = llist.root
+    while((not current_group.next_node == None)):
+        combined = 0
+        next_group = current_group.next_node
+        PI_IMAGE = []
+        for minterm_1 in current_group.data:
+            for minterm_2 in next_group.data:
+                com_index = get_combination_index(minterm_1, minterm_2)
+                if com_index != -1:
+                    new_minterm = combine_minterms(minterm_1, minterm_2, com_index)
+                    PI_IMAGE.append(new_minterm)
+                    combined += 1
+        temp_llist.add(PI_IMAGE)
+        current_group = next_group
+    return [temp_llist, combined]
 
-her_list.print_list()
+my_list.print_list()
+combined = 0
+new_list = LinkedList()
+while(True):
+    new_list, combined = do(my_list)
+    if combined == 0:
+        break
+    else:
+        my_list = new_list
+
+my_list.print_list()

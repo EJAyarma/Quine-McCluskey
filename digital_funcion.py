@@ -22,9 +22,8 @@ class DFGenerator():
 
     def populate_queue(self):
         groups = list(self.minterms_grouped.values())
-        for i in range(len(groups)-1, -1, -1):
-            self.process_linked_list.add(groups[i])
-
+        for group in groups:
+            self.process_linked_list.add(group)
 
     def get_combination_index(self, minterm_1, minterm_2):
         uneq_index = None
@@ -52,18 +51,13 @@ class DFGenerator():
         return new_minterm
  
     def get_PIs(self):
-        uncombined_minterms = []
-        combinations = 0
         temp_process_llist = LinkedList()
         current_group = self.process_linked_list.root
-        while(not (current_group.next_node is None)):
+        while(not current_group.next_node is None):
             next_group = current_group.next_node
-            for j in range(len(current_group.data)):
-                minterm_1 = current_group.data[j]
-                PI_IMAGE = []
-                for i in range(len(next_group.data)):
-                    print(len(next_group.data))
-                    minterm_2 = next_group.data[i]
+            PI_IMAGE = []
+            for minterm_1 in current_group.data:
+                for minterm_2 in next_group.data:
                     com_index = self.get_combination_index(minterm_1, minterm_2)
                     if com_index != -1:
                         new_minterm = self.combine_minterms(minterm_1, minterm_2, com_index)
@@ -84,5 +78,4 @@ my_digit_func.group_minterms()
 print(my_digit_func.minterms_grouped)
 my_digit_func.populate_queue()
 my_digit_func.process_linked_list.print_list()
-print(my_digit_func.process_linked_list.root.next_node)
 my_digit_func.get_PIs()
