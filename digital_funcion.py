@@ -1,9 +1,9 @@
 from minterm import Minterm
-from linked_list import LinkedList
+from queue import Queue
 
 class DFGenerator():
     minterms_grouped = dict()
-    process_linked_list = LinkedList()
+    process_queue = Queue()
 
     def __init__(self, num_var, minterms_decimal):
         self.num_var = num_var
@@ -23,7 +23,8 @@ class DFGenerator():
     def populate_queue(self):
         groups = list(self.minterms_grouped.values())
         for group in groups:
-            self.process_linked_list.add(group)
+            if len(group) != 0:
+                self.process_queue.enqueue(group)
 
     def get_combination_index(self, minterm_1, minterm_2):
         uneq_index = None
@@ -52,7 +53,7 @@ class DFGenerator():
  
     def get_PIs(self):
         temp_process_llist = LinkedList()
-        current_group = self.process_linked_list.root
+        current_group = self.process_queue.root
         while(not current_group.next_node is None):
             next_group = current_group.next_node
             PI_IMAGE = []
@@ -72,10 +73,3 @@ class DFGenerator():
 
     def work_solution():
         pass
-
-my_digit_func = DFGenerator(4, (0, 1, 3, 7, 8, 9, 11, 15))
-my_digit_func.group_minterms()
-print(my_digit_func.minterms_grouped)
-my_digit_func.populate_queue()
-my_digit_func.process_linked_list.print_list()
-my_digit_func.get_PIs()

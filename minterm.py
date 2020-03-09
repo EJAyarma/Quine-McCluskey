@@ -3,7 +3,7 @@ class Minterm():
     value_bin = None
     value_bits = None
     def __init__(self, dec_num=None, num_var=None):
-        self.combined= False
+        self.combined = False
         self.value_dec = str(dec_num)
 
         if not dec_num is None:
