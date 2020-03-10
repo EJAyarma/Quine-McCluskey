@@ -42,7 +42,7 @@ class DFGenerator():
     def combine_minterms(self, minterm_1, minterm_2, common_index):
         new_minterm = Minterm()
         new_minterm.name = (minterm_1.name + minterm_2.name).strip()
-        new_minterm.value_bits = minterm_1.value_bits
+        new_minterm.value_bits = minterm_1.value_bits[:]
         new_minterm.value_bits[common_index] = "_"
         new_minterm.value_dec = '.'.join([minterm_1.value_dec, minterm_2.value_dec])
         new_value_bits = ""
@@ -51,18 +51,21 @@ class DFGenerator():
         new_minterm.value_bin = new_value_bits
         return new_minterm
  
-    def get_PIs(self):
+    def get_PIs(self, process_list=None):
         uncombined_minterms = []
         combinations = 0
         temp_process_llist = LinkedList()
-        current_group = self.process_linked_list.root
+        if not process_list is None:
+            current_group = process_list.root
+        else:
+            current_group = self.process_linked_list.root
         while(not (current_group.next_node is None)):
             next_group = current_group.next_node
+            PI_IMAGE = []
             for j in range(len(current_group.data)):
+                PI_IMAGE.clear()
                 minterm_1 = current_group.data[j]
-                PI_IMAGE = []
                 for i in range(len(next_group.data)):
-                    print(len(next_group.data))
                     minterm_2 = next_group.data[i]
                     com_index = self.get_combination_index(minterm_1, minterm_2)
                     if com_index != -1:
@@ -70,7 +73,7 @@ class DFGenerator():
                         PI_IMAGE.append(new_minterm)
             temp_process_llist.add(PI_IMAGE)
             current_group = next_group
-        temp_process_llist.print_list()
+        return temp_process_llist
 
 
     def get_EPIs():
@@ -81,8 +84,18 @@ class DFGenerator():
 
 my_digit_func = DFGenerator(4, (0, 1, 3, 7, 8, 9, 11, 15))
 my_digit_func.group_minterms()
-print(my_digit_func.minterms_grouped)
 my_digit_func.populate_queue()
 my_digit_func.process_linked_list.print_list()
 print(my_digit_func.process_linked_list.root.next_node)
-my_digit_func.get_PIs()
+generations = []
+l1 = my_digit_func.get_PIs()
+generations.append(l1)
+l2 = my_digit_func.get_PIs(l1)
+generations.append(l2)
+l3 = my_digit_func.get_PIs(l2)
+generations.append(l3)
+l4 = my_digit_func.get_PIs(l3)
+generations.append(l4)
+
+for gen in generations:
+    gen.print_list()
