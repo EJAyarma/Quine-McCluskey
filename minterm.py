@@ -5,11 +5,9 @@ class Minterm():
     def __init__(self, dec_num=None, num_var=None):
         self.combined = False
         self.value_dec = str(dec_num)
-
         if not dec_num is None:
             self.name = "m" + str(dec_num) + " "
             self.value_bin = bin(dec_num)[2:len(bin(dec_num))].zfill(num_var)
-        
         if not self.value_bin is None:
             self.value_bits = [bit for bit in self.value_bin]
     

@@ -1,6 +1,7 @@
 from minterm import Minterm
 from digital_funcion import DFGenerator
 from queue import Queue
+from collections import deque
 
 def get_combination_index(minterm_1, minterm_2):
     uneq_index = None
@@ -32,20 +33,14 @@ def combine_minterms(minterm_1, minterm_2):
     new_minterm.value_bin = new_value_bits
     return new_minterm
 
-my_func = DFGenerator(3, (0, 2, 3, 4, 5, 6, 7))
-my_func.group_minterms()
-my_func.populate_queue()
-my_queue = my_func.process_queue
-print(my_func.minterms_grouped)
-
 def do(que):
     pass
 
 def gen_offspring(que):
-    temp_que = Queue()
-    current_group = que.dequeue()
-    while(not que.peek() is None):
-        next_group = que.peek()[:]
+    temp_que = deque()
+    current_group = que.popleft()
+    while(len(que) > 0):
+        next_group = que[0]
         combined_minterms = []
         for minterm_1 in current_group:
             for minterm_2 in next_group:
@@ -53,20 +48,12 @@ def gen_offspring(que):
                 if not new_minterm is None:
                     combined_minterms.append(new_minterm)
         if len(combined_minterms) != 0:
-            temp_que.enqueue(list(set(combined_minterms)))
-        current_group = que.dequeue()
+            temp_que.append(list(set(combined_minterms)))
+        current_group = que.popleft()
     return temp_que
 
-
-my_queues = []
-while(True):
-    temp_que = Queue()
-    temp_que = gen_offspring(my_queue)
-    if temp_que.isEmpty():
-        break
-    else:
-        print(my_queue)
-        my_queues.append(temp_que)
-        my_queue = temp_que
-
-print(my_queues)
+m1 = Minterm(4, 4)
+print("Bin value:", m1.value_bin)
+print("Bits value:", m1.value_bits)
+print("Name:", m1.name)
+print("Dec value:", m1.value_dec)
