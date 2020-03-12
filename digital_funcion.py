@@ -133,26 +133,6 @@ class DFGenerator():
     def work_solution():
         pass
 
-<<<<<<< HEAD
-my_digit_func = DFGenerator(4, (0, 1, 3, 7, 8, 9, 11, 15))
-my_digit_func.group_minterms()
-my_digit_func.populate_queue()
-my_digit_func.process_linked_list.print_list()
-print(my_digit_func.process_linked_list.root.next_node)
-generations = []
-l1 = my_digit_func.get_PIs()
-generations.append(l1)
-l2 = my_digit_func.get_PIs(l1)
-generations.append(l2)
-l3 = my_digit_func.get_PIs(l2)
-generations.append(l3)
-l4 = my_digit_func.get_PIs(l3)
-generations.append(l4)
-
-for gen in generations:
-    gen.print_list()
-=======
 my_func = DFGenerator(4, (0,1,2,3,9,10, 4, 5, 6))
 
 print(my_func.get_PIs())
->>>>>>> fix
