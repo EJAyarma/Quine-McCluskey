@@ -108,9 +108,10 @@ class DFGenerator():
         gen_uncombined = deque()
         while(len(gen_combined) > 0):
             # Convert deque() of lists into list of lists
-            combined.append(list(gen_combined.copy()).pop())
+            combined.append(list(gen_combined.copy()))
             uncombined.append(list(gen_uncombined))
             gen_combined, gen_uncombined = self.derive_generations(gen_combined)
+            print(gen_combined)
         return combined, uncombined
 
     
@@ -125,14 +126,32 @@ class DFGenerator():
                 PIs.extend(uncombined.pop())
         return PIs
 
+ 
+    def get_essential_PIs(self):
+        essential_PIs = []
+        PIs = self.get_PIs()
+        print(PIs)
+        minterm_counters = {minterm.value_dec: 0 for minterm in self.minterms}
+        # Count occurrences of PIs in all minterms
+        for PI in PIs:
+            for key in minterm_counters.keys():
+                if PI.value_dec.__contains__(key):
+                    minterm_counters[key] += 1
+        # Essential PIs have single occurrences in only minterm
+        for key in minterm_counters.keys():
+            if minterm_counters[key] == 1:
+                for PI in PIs:
+                    if PI.value_dec.__contains__(key):
+                        essential_PIs.append(PI)
+        print(PIs)
+        return essential_PIs
+        
 
-    def get_essential_PIs():
-        pass
 
 
     def work_solution():
         pass
 
-my_func = DFGenerator(4, (0,1,2,3,9,10, 4, 5, 6))
+my_func = DFGenerator(4, (0,1,2,3,4,5,6,9,10))
 
 print(my_func.get_PIs())

@@ -51,6 +51,10 @@ def gen_offspring(que):
             temp_que.append(list(set(combined_minterms)))
         current_group = que.popleft()
     return temp_que
-a = deque((1,2))
-b = list(a)
-print(b)
+
+
+a = {chr(i): i for i in range(65, 91)}
+for i in a:
+    print(i)
+b = "asdf"
+print(b.__contains__("z"))
