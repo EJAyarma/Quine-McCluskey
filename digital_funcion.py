@@ -22,6 +22,7 @@ class DFGenerator():
             group_key = "G"+str(i)
             group_list = [n for n in self.minterms if n.value_bin.count("1") == i]
             self.minterms_grouped[group_key] = group_list
+        self.populate_queue()
 
 
     def populate_queue(self):
@@ -64,39 +65,75 @@ class DFGenerator():
 
 
     def derive_generations(self, que):
-        temp_que = deque()
+        """
+        Perform all possible combination of minterms
+        returns a tuple of deque(combined_minterms)
+        and deque(uncombined_minterms)
+        """
+        # Use deque() to store groups of minterms that combine
+        # and those that do not. deque() contains lists
+        combined_que = deque() 
+        uncombined_que = deque() 
         current_group = que.popleft()
         while(len(que) > 0):
             next_group = que[0]
             combined_minterms = []
+            # Get combined minterms
             for minterm_1 in current_group:
                 for minterm_2 in next_group:
                     new_minterm = self.combine_minterms(minterm_1, minterm_2)
                     if not new_minterm is None:
                         combined_minterms.append(new_minterm)
+                        minterm_1.combined = minterm_2.combined = True
             if len(combined_minterms) != 0:
-                temp_que.append(list(set(combined_minterms)))
+                combined_que.append(list(set(combined_minterms)))
+            # Get uncombined minterms before last group
+            for minterm in current_group:
+                if not minterm.combined:
+                    uncombined_que.append(minterm)
             current_group = que.popleft()
-        return temp_que
+            # Get uncombined minterms in last group
+            if len(que) == 0:
+                for minterm in current_group:
+                    if not minterm.combined:
+                        uncombined_que.append(minterm)
+        return combined_que, uncombined_que
 
     def get_generations(self):
-        generations = []
-        gen = self.derive_generations(self.process_queue)
-        print(gen)
-        while(len(gen) > 0):
-            generations.append(gen.copy())
-            gen = self.derive_generations(gen)
-        return generations
+        """ Generate all stages of combinations """
+        self.group_minterms() # According to number of 1s
+        # Use a lists to store
+        combined = []
+        uncombined = []
+        gen_combined = self.process_queue
+        gen_uncombined = deque()
+        while(len(gen_combined) > 0):
+            # Convert deque() of lists into list of lists
+            combined.append(list(gen_combined.copy()).pop())
+            uncombined.append(list(gen_uncombined))
+            gen_combined, gen_uncombined = self.derive_generations(gen_combined)
+        return combined, uncombined
 
-    def get_EPIs():
+    
+    def get_PIs(self):
+        PIs = []
+        combined, uncombined = self.get_generations()
+        # The last generation is a list containing PIs
+        # derived from combined minterms
+        PIs.extend(combined.pop())
+        for minterms in uncombined:
+            if len(minterms) > 0:
+                PIs.extend(uncombined.pop())
+        return PIs
+
+
+    def get_essential_PIs():
         pass
+
 
     def work_solution():
         pass
 
-my_func = DFGenerator(3, (0, 2, 3, 4, 5, 6, 7))
-my_func.group_minterms()
-my_func.populate_queue()
-a = my_func.get_generations()
-for i in a:
-    print(i)
+my_func = DFGenerator(4, (0,1,2,3,9,10, 4, 5, 6))
+
+print(my_func.get_PIs())

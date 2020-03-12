@@ -51,9 +51,6 @@ def gen_offspring(que):
             temp_que.append(list(set(combined_minterms)))
         current_group = que.popleft()
     return temp_que
-
-m1 = Minterm(4, 4)
-print("Bin value:", m1.value_bin)
-print("Bits value:", m1.value_bits)
-print("Name:", m1.name)
-print("Dec value:", m1.value_dec)
+a = deque((1,2))
+b = list(a)
+print(b)
