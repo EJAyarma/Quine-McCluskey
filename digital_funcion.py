@@ -54,48 +54,13 @@ class DFGenerator():
         new_minterm = Minterm()
         new_minterm.name = (minterm_1.name + minterm_2.name).strip()
         new_minterm.value_bits = minterm_1.value_bits[:]
-<<<<<<< HEAD
         new_minterm.value_bits[common_index] = "_"
         new_minterm.value_dec = '.'.join([minterm_1.value_dec, minterm_2.value_dec])
-=======
-        if not common_index is None:
-            new_minterm.value_bits[common_index] = "_"
-        new_minterm.value_dec = '.'.join([str(minterm_1.value_dec), str(minterm_2.value_dec)])
->>>>>>> fix
         new_value_bits = ""
         for bit in new_minterm.value_bits:
             new_value_bits += bit
         new_minterm.value_bin = new_value_bits
         return new_minterm
-<<<<<<< HEAD
- 
-    def get_PIs(self, process_list=None):
-        uncombined_minterms = []
-        combinations = 0
-        temp_process_llist = LinkedList()
-        if not process_list is None:
-            current_group = process_list.root
-        else:
-            current_group = self.process_linked_list.root
-        while(not (current_group.next_node is None)):
-            next_group = current_group.next_node
-            PI_IMAGE = []
-            for j in range(len(current_group.data)):
-                PI_IMAGE.clear()
-                minterm_1 = current_group.data[j]
-                for i in range(len(next_group.data)):
-                    minterm_2 = next_group.data[i]
-                    com_index = self.get_combination_index(minterm_1, minterm_2)
-                    if com_index != -1:
-                        new_minterm = self.combine_minterms(minterm_1, minterm_2, com_index)
-                        PI_IMAGE.append(new_minterm)
-            temp_process_llist.add(PI_IMAGE)
-            current_group = next_group
-        return temp_process_llist
-
-
-    def get_EPIs():
-=======
 
 
     def derive_generations(self, que):
@@ -162,7 +127,6 @@ class DFGenerator():
 
 
     def get_essential_PIs():
->>>>>>> fix
         pass
 
 
