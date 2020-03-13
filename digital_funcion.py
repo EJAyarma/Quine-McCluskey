@@ -111,40 +111,49 @@ class DFGenerator():
             combined.append(list(gen_combined.copy()))
             uncombined.append(list(gen_uncombined))
             gen_combined, gen_uncombined = self.derive_generations(gen_combined)
-            print(gen_combined)
         return combined, uncombined
 
     
     def get_PIs(self):
+        """
+        Gather all PIs from both combined minterms
+        and uncombined minterms in a list"""
         PIs = []
-        combined, uncombined = self.get_generations()
-        # The last generation is a list containing PIs
+        combined_gens, uncombined_gens_PIs = self.get_generations()
+        # The last generation is a list of lists containing PIs
         # derived from combined minterms
-        PIs.extend(combined.pop())
-        for minterms in uncombined:
-            if len(minterms) > 0:
-                PIs.extend(uncombined.pop())
+        combined_gens_PIs = combined_gens.pop()
+        # PIs from generation of combined minterms
+        while len(combined_gens_PIs) > 0:
+            PIs.extend(combined_gens_PIs.pop())
+        # PIs from generation of uncombined minterms
+        while len(uncombined_gens_PIs) > 0:
+            PIs.extend(uncombined_gens_PIs.pop())
         return PIs
 
  
     def get_essential_PIs(self):
         essential_PIs = []
         PIs = self.get_PIs()
-        print(PIs)
-        minterm_counters = {minterm.value_dec: 0 for minterm in self.minterms}
         # Count occurrences of PIs in all minterms
+        # As a guide, the decimal_value of a PI is a string that contains the decimal value of
+        # each minterm that combined i.e. "1.3.4.2" 
+        minterm_counters = {minterm.value_dec: 0 for minterm in self.minterms}
+        print(minterm_counters)
         for PI in PIs:
             for key in minterm_counters.keys():
                 if PI.value_dec.__contains__(key):
                     minterm_counters[key] += 1
-        # Essential PIs have single occurrences in only minterm
+        print(minterm_counters)
+        # Essential PIs have single occurrences in only one minterm
+        # PIs that have only 1 count of a particular minterm 
+        # are considered as essential PIs
         for key in minterm_counters.keys():
             if minterm_counters[key] == 1:
                 for PI in PIs:
                     if PI.value_dec.__contains__(key):
                         essential_PIs.append(PI)
-        print(PIs)
-        return essential_PIs
+        return list(set(essential_PIs))
         
 
 
@@ -152,6 +161,7 @@ class DFGenerator():
     def work_solution():
         pass
 
-my_func = DFGenerator(4, (0,1,2,3,4,5,6,9,10))
+my_func = DFGenerator(4, (0,1,2,3,5,7,8,9,11,14))
 
-print(my_func.get_PIs())
+print("PIs", my_func.get_PIs())
+print("EPIs", my_func.get_essential_PIs())
