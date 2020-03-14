@@ -1,9 +1,10 @@
-from digital_funcion import DFGenerator
+from digital_funcion import DigitalFunction
 from expression_builder import ExpressionBuilder
+from function_worker import FunctionWorker
 
-my_func = DFGenerator(4, (0,1,2,3,5,7,8,9,11,14))
-
-expression = ExpressionBuilder(my_func)
-print(expression.EPIs)
+my_func = DigitalFunction(3, (0,2,3,4,5,6,7))
+my_func_worker = FunctionWorker(my_func)
+expression = ExpressionBuilder(my_func_worker)
+print(my_func_worker.get_PIs())
 print(expression.parse_essential_PI())
 print(expression.build_bool_expr())
