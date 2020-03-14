@@ -4,21 +4,21 @@ from collections import deque
 class DFGenerator():
     minterms_grouped = dict()
     process_queue = deque()
-
+    variables = list()
 
     def __init__(self, num_var, minterms_decimal):
         self.num_var = num_var
         self.minterms_decimal = minterms_decimal
-        self.literals = [chr(i) for i in range(65, 65+num_var)]
+        self.variables = tuple([chr(i) for i in range(65, 65+num_var)])
         self.minterms = [Minterm(i, num_var) for i in minterms_decimal]
 
 
     def __repr__(self):
-        return f"DigitalFuction({self.literals})"
+        return f"DigitalFuction{self.variables} "
 
 
     def group_minterms(self):
-        for i in range(len(self.literals)+1):
+        for i in range(len(self.variables)+1):
             group_key = "G"+str(i)
             group_list = [n for n in self.minterms if n.value_bin.count("1") == i]
             self.minterms_grouped[group_key] = group_list
@@ -160,8 +160,3 @@ class DFGenerator():
 
     def work_solution():
         pass
-
-my_func = DFGenerator(4, (0,1,2,3,5,7,8,9,11,14))
-
-print("PIs", my_func.get_PIs())
-print("EPIs", my_func.get_essential_PIs())
