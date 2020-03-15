@@ -1,6 +1,8 @@
 
 class DigitalFunction():
-
+    """
+    A model of a digital function"""
+    
     def __init__(self, num_var, minterms_decimal, name=None):
         self.name = name
         self.num_var = num_var

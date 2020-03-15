@@ -1,5 +1,9 @@
 class Minterm():
-
+    """
+    A model of a minterm. 
+    Operations on a Minterm Object can make it a Prime Implicant
+    or an Essential Prime Implicant
+    """
     name = None 
     value_bin = None
     value_bits = None

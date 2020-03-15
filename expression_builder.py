@@ -1,4 +1,9 @@
 class ExpressionBuilder():
+    """
+    This class contains functions for deriving
+    Boolean Expression for a digital funcition
+    The constructor takes a function_builder Object
+    """
 
     def __init__(self, function_builder):
         self.digital_function = function_builder.digital_function
@@ -7,8 +12,8 @@ class ExpressionBuilder():
 
     def parse_essential_PI(self):
         """
-        Convert Essential PIs into product of variables"""
-
+        Convert Essential PIs into product of variables
+        """
         products = []
         for EPI in self.EPIs:
             product = ""
@@ -23,6 +28,9 @@ class ExpressionBuilder():
     
 
     def bool_expr(self):
+        """
+        Construct a short Boolean expression
+        """
         products = self.parse_essential_PI()
         boolean_expression = ""
         for product in products:
@@ -31,4 +39,7 @@ class ExpressionBuilder():
         return boolean_expression
 
     def bool_expr_full(self):
+        """
+        Construct a long Boolean expression
+        """
         return str(self.digital_function) + " = " + self.bool_expr()
