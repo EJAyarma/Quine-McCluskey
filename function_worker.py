@@ -8,8 +8,12 @@ class FunctionWorker():
     process_queue = deque()
 
     def __init__(self, digital_function):
+        self.digital_function = digital_function
+        self.num_var = digital_function.num_var
         self.variables = digital_function.variables
-        self.minterms = digital_function.minterms
+        self.minterms_decimal = digital_function.minterms_decimal
+        self.minterms = [Minterm(num, self.num_var) for num in self.minterms_decimal]
+
 
     def populate_queue(self):
         groups = list(self.minterms_grouped.values())
