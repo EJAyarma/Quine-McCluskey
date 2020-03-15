@@ -4,6 +4,11 @@ from minterm import Minterm
 
 
 class FunctionWorker():
+    """
+    This class contains functions for all middle computations 
+    The constructor takes a DigitalFunction Object
+    """
+
     minterms_grouped = {}
     process_queue = deque()
 
@@ -16,6 +21,9 @@ class FunctionWorker():
 
 
     def populate_queue(self):
+        """
+        Add the groups of Minterms to a queue for other operations
+        """
         groups = list(self.minterms_grouped.values())
         for group in groups:
             if len(group) != 0:
@@ -23,6 +31,9 @@ class FunctionWorker():
 
     
     def group_minterms(self):
+        """
+        Group Minterms according to the number of 1s in their binary value
+        """
         for i in range(len(self.variables)+1):
             group_key = "G"+str(i)
             group_list = [n for n in self.minterms if n.value_bin.count("1") == i]
@@ -31,6 +42,9 @@ class FunctionWorker():
 
 
     def get_combination_index(self, minterm_1, minterm_2):
+        """
+        Find the index where two Minterms differ only in one position
+        """
         uneq_index = None
         uneq_count = 0
         for i in range(len(minterm_1.value_bits)):
@@ -46,6 +60,9 @@ class FunctionWorker():
 
 
     def combine_minterms(self, minterm_1, minterm_2):
+        """
+        Perform combination of Minterms
+        """
         common_index = self.get_combination_index(minterm_1, minterm_2)
         if common_index == -1:
             return
@@ -60,14 +77,16 @@ class FunctionWorker():
         new_minterm.value_bin = new_value_bits
         return new_minterm
 
-    def derive_generations(self, que):
+
+    def derive_generation(self, que):
         """
         Perform all possible combination of minterms
-        returns a tuple of deque(combined_minterms)
-        and deque(uncombined_minterms)
+        returns a tuple of combined_minterms
+        and uncombined_minterms
         """
-        # Use deque() to store groups of minterms that combine
-        # and those that do not. deque() contains lists
+        # Use queue to store groups of minterms that combine
+        # and those that do not. The queue has lists as data elements
+
         combined_que = deque() 
         uncombined_que = deque() 
         current_group = que.popleft()
@@ -97,27 +116,30 @@ class FunctionWorker():
 
 
     def get_generations(self):
-        """ Generate all stages of combinations """
-        self.group_minterms() # According to number of 1s
-        # Use a lists to store
-        combined = []
-        uncombined = []
-        gen_combined = self.process_queue
-        gen_uncombined = deque()
-        while(len(gen_combined) > 0):
-            # Convert deque() of lists into list of lists
-            combined.append(list(gen_combined.copy()))
-            uncombined.append(list(gen_uncombined))
-            gen_combined, gen_uncombined = self.derive_generations(gen_combined)
-        return combined, uncombined
+        """ Generate all stages of combinations 
+        """
+        self.group_minterms() 
+        combined_generations = [] # Store generation of combined mineterms
+        uncombined_generations = [] # Store generation of uncombined minterms
+        combined_gen = self.process_queue
+        uncombined_gen = deque()
+        while(len(combined_gen) > 0):
+            # Convert queue of lists into list of lists
+            combined_generations.append(list(combined_gen.copy()))
+            uncombined_generations.append(list(uncombined_gen))
+            combined_gen, uncombined_gen = self.derive_generation(combined_gen)
+        return {"combined":combined_generations, "uncombined":uncombined_generations}
     
 
     def get_PIs(self):
         """
-        Gather all PIs from both combined minterms
-        and uncombined minterms in a list"""
+        Group all PIs from both combined minterms
+        and uncombined minterms in a list
+        """
         PIs = []
-        combined_gens, uncombined_gens_PIs = self.get_generations()
+        generations = self.get_generations()
+        combined_gens = generations["combined"]
+        uncombined_gens_PIs = generations["uncombined"]
         # The last generation is a list of lists containing PIs
         # derived from combined minterms
         combined_gens_PIs = combined_gens.pop()
@@ -131,18 +153,19 @@ class FunctionWorker():
 
     
     def get_essential_PIs(self):
+        """
+        Filter PIs to get EPIs
+        """
         essential_PIs = []
         PIs = self.get_PIs()
         # Count occurrences of PIs in all minterms
         # As a guide, the decimal_value of a PI is a string that contains the decimal value of
         # each minterm that combined i.e. "1.3.4.2" 
         minterm_counters = {minterm.value_dec: 0 for minterm in self.minterms}
-        print(minterm_counters)
         for PI in PIs:
             for key in minterm_counters.keys():
                 if PI.value_dec.__contains__(key):
                     minterm_counters[key] += 1
-        print(minterm_counters)
         # Essential PIs have single occurrences in only one minterm
         # PIs that have only 1 count of a particular minterm 
         # are considered as essential PIs
